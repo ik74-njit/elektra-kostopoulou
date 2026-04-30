@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atlas of Tech Decentralization</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,800;9..144,900&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f4ede0;
+    --paper-2: #ebe2d1;
+    --ink: #1a1714;
+    --ink-soft: #4a423a;
+    --rule: #1a1714;
+    --accent: #d94a1f;
+    --accent-2: #2d5f3f;
+    --accent-3: #1e4d8f;
+    --highlight: #f4d35e;
+    --shadow: rgba(26, 23, 20, 0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(217, 74, 31, 0.04) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(45, 95, 63, 0.04) 0%, transparent 40%);
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.09 0 0 0 0 0.08 0 0 0 0.18 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.5;
+    mix-blend-mode: multiply;
+    z-index: 1;
+  }
+
+  .wrap { position: relative; z-index: 2; }
+
+  /* HEADER */
+  header {
+    border-bottom: 2px solid var(--rule);
+    padding: 24px 48px 16px;
+    background: var(--paper);
+  }
+
+  .masthead {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-soft);
+    margin-bottom: 32px;
+  }
+
+  .masthead .left { display: flex; gap: 32px; }
+  .masthead .star { color: var(--accent); font-size: 14px; }
+
+  .title-block {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 48px;
+    align-items: end;
+    padding-bottom: 24px;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: clamp(48px, 7vw, 96px);
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+    font-variation-settings: 'opsz' 144;
+  }
+
+  h1 .em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+  }
+
+  .deck {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    line-height: 1.5;
+    max-width: 380px;
+    color: var(--ink-soft);
+    text-align: right;
+    font-style: italic;
+  }
+
+  .stats-bar {
+    display: flex;
+    gap: 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    margin-top: 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .stat {
+    flex: 1;
+    padding: 14px 20px;
+    border-right: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .stat:last-child { border-right: none; }
+  .stat .num {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 800;
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  /* MAIN LAYOUT */
+  main {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 0;
+    min-height: calc(100vh - 200px);
+  }
+
+  /* SIDEBAR / FILTERS */
+  aside {
+    border-right: 2px solid var(--rule);
+    padding: 32px 28px;
+    position: sticky;
+    top: 0;
+    align-self: start;
+    max-height: 100vh;
+    overflow-y: auto;
+    background: var(--paper);
+  }
+
+  .filter-group { margin-bottom: 32px; }
+
+  .filter-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-soft);
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+  }
+  .filter-label .count { color: var(--accent); }
+
+  .filter-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .filter-btn {
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--ink);
+    border-radius: 0;
+    transition: all 0.15s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 2px solid transparent;
+  }
+
+  .filter-btn:hover {
+    background: var(--paper-2);
+    border-left-color: var(--ink);
+  }
+
+  .filter-btn.active {
+    background: var(--ink);
+    color: var(--paper);
+    border-left-color: var(--accent);
+    font-weight: 600;
+  }
+
+  .filter-btn .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    opacity: 0.6;
+  }
+
+  .search-box {
+    width: 100%;
+    background: var(--paper-2);
+    border: 1px solid var(--rule);
+    padding: 10px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink);
+    margin-bottom: 24px;
+    transition: all 0.2s;
+  }
+  .search-box:focus {
+    outline: none;
+    background: var(--paper);
+    box-shadow: 4px 4px 0 var(--ink);
+    transform: translate(-2px, -2px);
+  }
+  .search-box::placeholder { color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.1em; font-size: 10px; }
+
+  .reset-btn {
+    width: 100%;
+    background: var(--accent);
+    color: var(--paper);
+    border: none;
+    padding: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-weight: 700;
+  }
+  .reset-btn:hover {
+    background: var(--ink);
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 var(--accent);
+  }
+
+  /* MAIN CONTENT */
+  .content {
+    padding: 32px 48px 80px;
+  }
+
+  .results-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--rule);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-soft);
+  }
+
+  .results-meta .showing {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 18px;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--ink);
+  }
+  .results-meta .showing strong {
+    color: var(--accent);
+    font-weight: 800;
+  }
+
+  /* GRID */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 0;
+    border-top: 1px solid var(--rule);
+    border-left: 1px solid var(--rule);
+  }
+
+  .card {
+    background: var(--paper);
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: 24px 22px 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 280px;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--ink);
+    transform: translateY(101%);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 0;
+  }
+
+  .card:hover::before { transform: translateY(0); }
+  .card:hover { color: var(--paper); }
+  .card:hover .meta-row { color: var(--paper-2); }
+  .card:hover .meta-row .label { color: var(--highlight); }
+  .card:hover .card-name .em { color: var(--highlight); }
+  .card:hover .card-tagline { color: var(--paper-2); }
+
+  .card > * { position: relative; z-index: 1; }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-soft);
+  }
+
+  .card-num {
+    font-style: italic;
+    font-weight: 500;
+  }
+
+  .card-cat {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 3px 8px;
+    border-radius: 2px;
+    font-weight: 700;
+  }
+  .card:hover .card-cat {
+    background: var(--accent);
+    color: var(--paper);
+  }
+
+  .card-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 32px;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+    font-variation-settings: 'opsz' 144;
+  }
+  .card-name .em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+  }
+
+  .card-replaces {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-soft);
+    margin-bottom: 14px;
+  }
+  .card-replaces span { color: var(--accent); font-weight: 700; }
+
+  .card-tagline {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--ink-soft);
+    flex: 1;
+    margin-bottom: 16px;
+  }
+
+  .card-meta {
+    border-top: 1px solid currentColor;
+    padding-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .card:hover .card-meta { border-top-color: var(--paper-2); }
+
+  .meta-row {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-soft);
+  }
+  .meta-row .label { color: var(--ink); font-weight: 700; }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 23, 20, 0.85);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    padding: 24px;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--paper);
+    max-width: 680px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 40px 44px;
+    border: 2px solid var(--ink);
+    box-shadow: 12px 12px 0 var(--accent);
+    position: relative;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: transparent;
+    border: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    cursor: pointer;
+    color: var(--ink);
+    padding: 6px 10px;
+  }
+  .modal-close:hover { background: var(--ink); color: var(--paper); }
+
+  .modal-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .modal-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 56px;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    margin-bottom: 12px;
+  }
+  .modal-title .em { font-style: italic; font-weight: 400; color: var(--accent); }
+
+  .modal-replaces {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-soft);
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .modal-replaces span { color: var(--accent); font-weight: 700; }
+
+  .modal-body {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    color: var(--ink);
+  }
+
+  .modal-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--rule);
+    border-left: 1px solid var(--rule);
+    margin-bottom: 24px;
+  }
+  .modal-grid div {
+    padding: 12px 16px;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+  }
+  .modal-grid .label {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-soft);
+    font-size: 9px;
+    margin-bottom: 4px;
+  }
+  .modal-grid .value { color: var(--ink); font-weight: 600; }
+
+  .modal-link {
+    display: inline-block;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 12px 24px;
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-weight: 700;
+    transition: all 0.15s ease;
+  }
+  .modal-link:hover {
+    background: var(--accent);
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+
+  /* EMPTY STATE */
+  .empty {
+    grid-column: 1 / -1;
+    padding: 80px 40px;
+    text-align: center;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--ink-soft);
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 2px solid var(--rule);
+    padding: 32px 48px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-soft);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  footer .legend { display: flex; gap: 20px; flex-wrap: wrap; }
+  footer .legend span::before {
+    content: '';
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: var(--accent);
+    margin-right: 6px;
+    transform: translateY(1px);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    main { grid-template-columns: 1fr; }
+    aside {
+      position: static;
+      max-height: none;
+      border-right: none;
+      border-bottom: 2px solid var(--rule);
+    }
+    .content { padding: 24px 24px 60px; }
+    header { padding: 20px 24px 12px; }
+    .title-block { grid-template-columns: 1fr; }
+    .deck { text-align: left; }
+    .stats-bar { flex-wrap: wrap; }
+    .stat { flex: 1 0 50%; border-bottom: 1px solid var(--rule); }
+    footer { padding: 24px; }
+  }
+
+  /* ANIMATIONS */
+  .card { animation: fadeUp 0.4s ease backwards; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="masthead">
+    <div class="left">
+      <span>Vol. I &nbsp;·&nbsp; Issue 01</span>
+      <span>Updated: Apr 2026</span>
+    </div>
+    <div class="right">
+      <span class="star">✦</span>&nbsp;&nbsp;A Living Document
+    </div>
+  </div>
+
+  <div class="title-block">
+    <h1>The <span class="em">Atlas</span><br>of Tech<br>Decentralization</h1>
+    <p class="deck">A working catalog of platforms, protocols, and projects building outside the dominion of Big Tech — organized by category, ideology, and region.</p>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat"><span>Total Projects</span><span class="num" id="stat-total">—</span></div>
+    <div class="stat"><span>Categories</span><span class="num" id="stat-cats">—</span></div>
+    <div class="stat"><span>Ideologies</span><span class="num" id="stat-ideo">—</span></div>
+    <div class="stat"><span>Regions</span><span class="num" id="stat-reg">—</span></div>
+  </div>
+</header>
+
+<main>
+  <aside>
+    <input type="text" class="search-box" id="search" placeholder="Search projects…">
+
+    <div class="filter-group">
+      <div class="filter-label"><span>Category</span><span class="count" id="cat-count"></span></div>
+      <ul class="filter-list" id="cat-filters"></ul>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label"><span>Ideology</span><span class="count" id="ideo-count"></span></div>
+      <ul class="filter-list" id="ideo-filters"></ul>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label"><span>Region</span><span class="count" id="reg-count"></span></div>
+      <ul class="filter-list" id="reg-filters"></ul>
+    </div>
+
+    <button class="reset-btn" id="reset">Clear all filters</button>
+  </aside>
+
+  <div class="content">
+    <div class="results-meta">
+      <div class="showing">Showing <strong id="result-count">—</strong> of <span id="result-total">—</span> projects</div>
+      <div id="active-filters">All entries</div>
+    </div>
+
+    <div class="grid" id="grid"></div>
+  </div>
+</main>
+
+<footer>
+  <div>© Atlas of Tech Decentralization &nbsp;·&nbsp; Educational use</div>
+  <div class="legend">
+    <span>Click any card for full entry</span>
+    <span>Combine filters freely</span>
+  </div>
+</footer>
+
+</div>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<script>
+// ============================================================
+// PROJECT DATA — edit this array to add/remove/update projects
+// ============================================================
+const projects = [
+  {
+    name: "Mastodon",
+    category: "Social Media",
+    ideology: "Federated / P2P",
+    region: "Europe",
+    replaces: "Twitter / X",
+    tagline: "Federated microblogging network where users join independent servers connected via the ActivityPub protocol — no central owner, no algorithmic feed.",
+    founded: "2016",
+    origin: "Germany",
+    license: "AGPL-3.0",
+    url: "https://joinmastodon.org"
+  },
+  {
+    name: "Bluesky",
+    category: "Social Media",
+    ideology: "Federated / P2P",
+    region: "North America",
+    replaces: "Twitter / X",
+    tagline: "Decentralized social network built on the AT Protocol, allowing portable identities and user-controlled algorithms.",
+    founded: "2022",
+    origin: "USA",
+    license: "MIT / Apache 2.0",
+    url: "https://bsky.app"
+  },
+  {
+    name: "UpScrolled",
+    category: "Social Media",
+    ideology: "Solidarity Tech",
+    region: "Oceania",
+    replaces: "TikTok / Instagram",
+    tagline: "Australian short-form video and microblogging platform backed by Tech for Palestine; rejects engagement-maximizing algorithms by design.",
+    founded: "2025",
+    origin: "Australia",
+    license: "Proprietary",
+    url: "https://upscrolled.com"
+  },
+  {
+    name: "PeerTube",
+    category: "Social Media",
+    ideology: "Federated / P2P",
+    region: "Europe",
+    replaces: "YouTube",
+    tagline: "Federated video platform using ActivityPub and WebTorrent for decentralized hosting and bandwidth-sharing between instances.",
+    founded: "2018",
+    origin: "France",
+    license: "AGPL-3.0",
+    url: "https://joinpeertube.org"
+  },
+  {
+    name: "Lemmy",
+    category: "Social Media",
+    ideology: "Federated / P2P",
+    region: "Europe",
+    replaces: "Reddit",
+    tagline: "Federated link-aggregation and discussion network in the Fediverse, with self-hosted communities.",
+    founded: "2019",
+    origin: "Germany",
+    license: "AGPL-3.0",
+    url: "https://join-lemmy.org"
+  },
+  {
+    name: "Pixelfed",
+    category: "Social Media",
+    ideology: "Federated / P2P",
+    region: "North America",
+    replaces: "Instagram",
+    tagline: "Federated photo-sharing platform on ActivityPub with no ads, no tracking, and chronological feeds.",
+    founded: "2018",
+    origin: "Canada",
+    license: "AGPL-3.0",
+    url: "https://pixelfed.org"
+  },
+  {
+    name: "Proton Mail",
+    category: "Email",
+    ideology: "Privacy First",
+    region: "Europe",
+    replaces: "Gmail",
+    tagline: "End-to-end encrypted email service based in Switzerland under strict privacy law; open-source clients.",
+    founded: "2014",
+    origin: "Switzerland",
+    license: "GPL-3.0 (clients)",
+    url: "https://proton.me"
+  },
+  {
+    name: "Tuta",
+    category: "Email",
+    ideology: "Privacy First",
+    region: "Europe",
+    replaces: "Gmail",
+    tagline: "German encrypted email and calendar provider with quantum-resistant encryption roadmap.",
+    founded: "2011",
+    origin: "Germany",
+    license: "GPL-3.0",
+    url: "https://tuta.com"
+  },
+  {
+    name: "Runbox",
+    category: "Email",
+    ideology: "Privacy First",
+    region: "Europe",
+    replaces: "Gmail",
+    tagline: "Norwegian email provider operating outside US CLOUD Act jurisdiction; powered by renewable hydroelectric energy.",
+    founded: "2000",
+    origin: "Norway",
+    license: "Proprietary",
+    url: "https://runbox.com"
+  },
+  {
+    name: "Mojeek",
+    category: "Search",
+    ideology: "Privacy First",
+    region: "Europe",
+    replaces: "Google Search",
+    tagline: "UK search engine running its own independent crawler and index, with a no-tracking policy.",
+    founded: "2004",
+    origin: "United Kingdom",
+    license: "Proprietary",
+    url: "https://www.mojeek.com"
+  },
+  {
+    name: "Qwant",
+    category: "Search",
+    ideology: "Privacy First",
+    region: "Europe",
+    replaces: "Google Search",
+    tagline: "French GDPR-aligned search engine that does not track users or filter results based on personal data.",
+    founded: "2013",
+    origin: "France",
+    license: "Proprietary",
+    url: "https://www.qwant.com"
+  },
+  {
+    name: "DuckDuckGo",
+    category: "Search",
+    ideology: "Privacy First",
+    region: "North America",
+    replaces: "Google Search",
+    tagline: "Search engine pledging not to track users or personalize results, syndicating results from multiple sources.",
+    founded: "2008",
+    origin: "USA",
+    license: "Mixed / Proprietary",
+    url: "https://duckduckgo.com"
+  },
+  {
+    name: "Firefox",
+    category: "Browser",
+    ideology: "Open Source",
+    region: "North America",
+    replaces: "Chrome",
+    tagline: "Open-source browser by Mozilla Foundation, the largest non-Chromium engine alternative on the desktop.",
+    founded: "2002",
+    origin: "USA",
+    license: "MPL-2.0",
+    url: "https://www.mozilla.org/firefox"
+  },
+  {
+    name: "Vivaldi",
+    category: "Browser",
+    ideology: "Privacy First",
+    region: "Europe",
+    replaces: "Chrome",
+    tagline: "Customizable browser built by ex-Opera engineers; no telemetry by default and tracker blocking built in.",
+    founded: "2016",
+    origin: "Norway",
+    license: "Proprietary (mostly)",
+    url: "https://vivaldi.com"
+  },
+  {
+    name: "Mullvad Browser",
+    category: "Browser",
+    ideology: "Privacy First",
+    region: "Europe",
+    replaces: "Chrome",
+    tagline: "Privacy-focused browser developed by Mullvad VPN and the Tor Project; strong fingerprinting resistance.",
+    founded: "2023",
+    origin: "Sweden",
+    license: "MPL-2.0",
+    url: "https://mullvad.net/en/browser"
+  },
+  {
+    name: "Thaura AI",
+    category: "AI Assistant",
+    ideology: "Solidarity Tech",
+    region: "Europe",
+    replaces: "ChatGPT",
+    tagline: "Ethical AI built on the open-source GLM-4.5 Air model. No training on user data, no military contracts, no Big Tech cloud — hosted on independent inference infrastructure.",
+    founded: "2025",
+    origin: "Germany / Syria",
+    license: "Open model + proprietary client",
+    url: "https://thaura.ai"
+  },
+  {
+    name: "ChatAcademia",
+    category: "AI Assistant",
+    ideology: "Open Knowledge",
+    region: "Global",
+    replaces: "ChatGPT (research)",
+    tagline: "Research-focused AI that searches 8+ scholarly databases simultaneously (ArXiv, PubMed, OpenAlex, Semantic Scholar). Integrates with Zotero and Mendeley; does not train on user data.",
+    founded: "2024",
+    origin: "Global",
+    license: "Proprietary",
+    url: "https://www.chatacademia.com"
+  },
+  {
+    name: "Sci-Bot",
+    category: "Open Knowledge",
+    ideology: "Solidarity Tech",
+    region: "Eurasia",
+    replaces: "Publisher AI tools",
+    tagline: "AI research assistant from Sci-Hub founder Alexandra Elbakyan. Answers questions using Sci-Hub's pirated article database; works alongside Sci-Net for peer-to-peer paper requests.",
+    founded: "2026",
+    origin: "Russia / Kazakhstan",
+    license: "Proprietary",
+    url: "https://sci-bot.ru"
+  },
+  {
+    name: "Sci-Hub",
+    category: "Open Knowledge",
+    ideology: "Solidarity Tech",
+    region: "Eurasia",
+    replaces: "Elsevier / Springer paywalls",
+    tagline: "Shadow library providing free access to ~88M scholarly articles. Operates in legal grey zone; cited as essential infrastructure for researchers without institutional access.",
+    founded: "2011",
+    origin: "Kazakhstan / Russia",
+    license: "n/a",
+    url: "https://sci-hub.se"
+  },
+  {
+    name: "Nazah",
+    category: "Marketplace",
+    ideology: "Solidarity Tech",
+    region: "North America",
+    replaces: "Amazon",
+    tagline: "Canadian curated marketplace that hand-screens vendors against ethical criteria — no human-rights-abuse ties, fair living wages required.",
+    founded: "2024",
+    origin: "Canada",
+    license: "Proprietary",
+    url: "https://shopnazah.com"
+  },
+  {
+    name: "Subvert",
+    category: "Creator Platform",
+    ideology: "Cooperative",
+    region: "North America",
+    replaces: "Bandcamp",
+    tagline: "Cooperatively owned music marketplace where artists are members and shape platform decisions.",
+    founded: "2024",
+    origin: "USA",
+    license: "Proprietary",
+    url: "https://subvert.fm"
+  },
+  {
+    name: "Metalabel",
+    category: "Creator Platform",
+    ideology: "Cooperative",
+    region: "North America",
+    replaces: "Patreon / Bandcamp",
+    tagline: "Platform for creator collectives to release work together, with built-in revenue splits between collaborators.",
+    founded: "2022",
+    origin: "USA",
+    license: "Proprietary",
+    url: "https://metalabel.com"
+  },
+  {
+    name: "Funkwhale",
+    category: "Creator Platform",
+    ideology: "Federated / P2P",
+    region: "Europe",
+    replaces: "Spotify / SoundCloud",
+    tagline: "Federated music streaming and sharing platform built on ActivityPub.",
+    founded: "2017",
+    origin: "France",
+    license: "AGPL-3.0",
+    url: "https://funkwhale.audio"
+  },
+  {
+    name: "Volla Phone",
+    category: "Hardware / OS",
+    ideology: "Privacy First",
+    region: "Europe",
+    replaces: "iPhone / Pixel",
+    tagline: "German-made smartphones running de-Googled Android with no central cloud server; ~15,000 sold across 55 countries.",
+    founded: "2018",
+    origin: "Germany",
+    license: "AOSP-based",
+    url: "https://volla.online"
+  },
+  {
+    name: "CalyxOS",
+    category: "Hardware / OS",
+    ideology: "Privacy First",
+    region: "North America",
+    replaces: "Stock Android",
+    tagline: "Privacy-focused Android distribution from the Calyx Institute; pre-configured with privacy tools.",
+    founded: "2018",
+    origin: "USA",
+    license: "Apache 2.0 / GPL",
+    url: "https://calyxos.org"
+  },
+  {
+    name: "/e/OS",
+    category: "Hardware / OS",
+    ideology: "Privacy First",
+    region: "Europe",
+    replaces: "Stock Android",
+    tagline: "De-Googled mobile operating system from Murena; replaces Google services with privacy-respecting alternatives.",
+    founded: "2018",
+    origin: "France",
+    license: "Apache 2.0",
+    url: "https://e.foundation"
+  },
+  {
+    name: "Framework Laptop",
+    category: "Hardware / OS",
+    ideology: "Open Source",
+    region: "North America",
+    replaces: "Apple / Dell",
+    tagline: "Modular, fully repairable laptops designed to fight planned obsolescence with user-replaceable parts.",
+    founded: "2019",
+    origin: "USA",
+    license: "Mixed (open hardware specs)",
+    url: "https://frame.work"
+  },
+  {
+    name: "IPFS",
+    category: "Storage / Files",
+    ideology: "Federated / P2P",
+    region: "Global",
+    replaces: "Centralized cloud storage",
+    tagline: "InterPlanetary File System — a peer-to-peer protocol for content-addressed storage, the foundation for many decentralized apps.",
+    founded: "2014",
+    origin: "Global / USA",
+    license: "MIT / Apache 2.0",
+    url: "https://ipfs.tech"
+  },
+  {
+    name: "Hypercore Protocol",
+    category: "Storage / Files",
+    ideology: "Federated / P2P",
+    region: "Global",
+    replaces: "Centralized sync services",
+    tagline: "P2P data-sync protocol enabling real-time, append-only data structures shared across peers without servers.",
+    founded: "2017",
+    origin: "Global",
+    license: "MIT",
+    url: "https://holepunch.to"
+  },
+  {
+    name: "LibreRouter",
+    category: "Networking",
+    ideology: "Cooperative",
+    region: "Latin America",
+    replaces: "Telecom-controlled internet",
+    tagline: "Open-source mesh router hardware deployed in remote villages in Argentina, Colombia and elsewhere for community-owned networks.",
+    founded: "2017",
+    origin: "Argentina",
+    license: "Open hardware / GPL",
+    url: "https://librerouter.org"
+  },
+  {
+    name: "Radicle",
+    category: "Code Hosting",
+    ideology: "Federated / P2P",
+    region: "Europe",
+    replaces: "GitHub / GitLab",
+    tagline: "Peer-to-peer 'sovereign forge' built on Git. No central server, repositories replicated across peers, cryptographic identity, local-first design.",
+    founded: "2018",
+    origin: "Germany / Switzerland",
+    license: "MIT / Apache 2.0",
+    url: "https://radicle.dev"
+  },
+  {
+    name: "Codeberg",
+    category: "Code Hosting",
+    ideology: "Cooperative",
+    region: "Europe",
+    replaces: "GitHub",
+    tagline: "Non-profit, community-run code hosting platform built on Forgejo, based in Germany.",
+    founded: "2019",
+    origin: "Germany",
+    license: "MIT (Forgejo)",
+    url: "https://codeberg.org"
+  },
+  {
+    name: "Up & Go",
+    category: "Marketplace",
+    ideology: "Cooperative",
+    region: "North America",
+    replaces: "Handy / TaskRabbit",
+    tagline: "Worker-owned cleaning services platform in NYC; immigrant women cooperatives keep ~95% of fees vs. ~50% on Big Tech apps.",
+    founded: "2017",
+    origin: "USA",
+    license: "Proprietary (co-op)",
+    url: "https://www.upandgo.coop"
+  },
+  {
+    name: "Stocksy",
+    category: "Creator Platform",
+    ideology: "Cooperative",
+    region: "North America",
+    replaces: "Getty / Shutterstock",
+    tagline: "Photographer-owned stock media co-op where contributors share profits and govern the platform.",
+    founded: "2013",
+    origin: "Canada",
+    license: "Proprietary (co-op)",
+    url: "https://www.stocksy.com"
+  },
+  {
+    name: "Resonate",
+    category: "Creator Platform",
+    ideology: "Cooperative",
+    region: "Europe",
+    replaces: "Spotify",
+    tagline: "Multi-stakeholder music streaming co-op with a 'stream2own' model — listeners pay slightly more each time until they own a track.",
+    founded: "2015",
+    origin: "Germany / Global",
+    license: "AGPL-3.0",
+    url: "https://resonate.coop"
+  }
+];
+
+// ============================================================
+// RENDER LOGIC
+// ============================================================
+const state = {
+  search: "",
+  cat: null,
+  ideo: null,
+  reg: null
+};
+
+const grid = document.getElementById("grid");
+const modal = document.getElementById("modal");
+const modalContent = document.getElementById("modal-content");
+
+function unique(arr) { return [...new Set(arr)].sort(); }
+
+const cats = unique(projects.map(p => p.category));
+const ideos = unique(projects.map(p => p.ideology));
+const regs = unique(projects.map(p => p.region));
+
+document.getElementById("stat-total").textContent = projects.length;
+document.getElementById("stat-cats").textContent = cats.length;
+document.getElementById("stat-ideo").textContent = ideos.length;
+document.getElementById("stat-reg").textContent = regs.length;
+
+function buildFilter(listId, items, key) {
+  const ul = document.getElementById(listId);
+  ul.innerHTML = "";
+  items.forEach(item => {
+    const count = projects.filter(p => p[key] === item).length;
+    const li = document.createElement("li");
+    const btn = document.createElement("button");
+    btn.className = "filter-btn";
+    btn.dataset.value = item;
+    btn.dataset.key = key;
+    btn.innerHTML = `<span>${item}</span><span class="num">${String(count).padStart(2, '0')}</span>`;
+    btn.addEventListener("click", () => {
+      const stateKey = key === "category" ? "cat" : key === "ideology" ? "ideo" : "reg";
+      state[stateKey] = state[stateKey] === item ? null : item;
+      render();
+    });
+    li.appendChild(btn);
+    ul.appendChild(li);
+  });
+}
+
+buildFilter("cat-filters", cats, "category");
+buildFilter("ideo-filters", ideos, "ideology");
+buildFilter("reg-filters", regs, "region");
+document.getElementById("cat-count").textContent = String(cats.length).padStart(2,'0');
+document.getElementById("ideo-count").textContent = String(ideos.length).padStart(2,'0');
+document.getElementById("reg-count").textContent = String(regs.length).padStart(2,'0');
+
+document.getElementById("search").addEventListener("input", e => {
+  state.search = e.target.value.toLowerCase();
+  render();
+});
+
+document.getElementById("reset").addEventListener("click", () => {
+  state.search = "";
+  state.cat = null; state.ideo = null; state.reg = null;
+  document.getElementById("search").value = "";
+  render();
+});
+
+function render() {
+  // active filter highlighting
+  document.querySelectorAll(".filter-btn").forEach(b => {
+    const k = b.dataset.key;
+    const v = b.dataset.value;
+    const stateKey = k === "category" ? "cat" : k === "ideology" ? "ideo" : "reg";
+    b.classList.toggle("active", state[stateKey] === v);
+  });
+
+  const filtered = projects.filter(p => {
+    if (state.cat && p.category !== state.cat) return false;
+    if (state.ideo && p.ideology !== state.ideo) return false;
+    if (state.reg && p.region !== state.reg) return false;
+    if (state.search) {
+      const hay = (p.name + " " + p.tagline + " " + p.replaces + " " + p.category + " " + p.ideology).toLowerCase();
+      if (!hay.includes(state.search)) return false;
+    }
+    return true;
+  });
+
+  document.getElementById("result-count").textContent = filtered.length;
+  document.getElementById("result-total").textContent = projects.length;
+
+  const activeBits = [];
+  if (state.cat) activeBits.push(state.cat);
+  if (state.ideo) activeBits.push(state.ideo);
+  if (state.reg) activeBits.push(state.reg);
+  if (state.search) activeBits.push(`"${state.search}"`);
+  document.getElementById("active-filters").textContent = activeBits.length ? activeBits.join(" · ") : "All entries";
+
+  grid.innerHTML = "";
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div class="empty">No projects match these filters.<br><span style="font-size:14px; font-style: normal; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 0.15em; color: var(--accent);">Try clearing one.</span></div>`;
+    return;
+  }
+
+  filtered.forEach((p, i) => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.style.animationDelay = `${Math.min(i * 0.025, 0.4)}s`;
+    const num = String(projects.indexOf(p) + 1).padStart(3, '0');
+    card.innerHTML = `
+      <div class="card-header">
+        <span class="card-num">№ ${num}</span>
+        <span class="card-cat">${p.category}</span>
+      </div>
+      <div class="card-name">${p.name}</div>
+      <div class="card-replaces">replaces &nbsp;<span>${p.replaces}</span></div>
+      <div class="card-tagline">${p.tagline}</div>
+      <div class="card-meta">
+        <div class="meta-row"><span class="label">Ideology</span><span>${p.ideology}</span></div>
+        <div class="meta-row"><span class="label">Origin</span><span>${p.origin}</span></div>
+        <div class="meta-row"><span class="label">Founded</span><span>${p.founded}</span></div>
+      </div>
+    `;
+    card.addEventListener("click", () => openModal(p));
+    grid.appendChild(card);
+  });
+}
+
+function openModal(p) {
+  const num = String(projects.indexOf(p) + 1).padStart(3, '0');
+  modalContent.innerHTML = `
+    <button class="modal-close" id="close-x">[ ESC ] close</button>
+    <div class="modal-meta">№ ${num} &nbsp;·&nbsp; ${p.category}</div>
+    <div class="modal-title">${p.name}</div>
+    <div class="modal-replaces">An alternative to &nbsp;<span>${p.replaces}</span></div>
+    <div class="modal-body">${p.tagline}</div>
+    <div class="modal-grid">
+      <div><div class="label">Ideology</div><div class="value">${p.ideology}</div></div>
+      <div><div class="label">Region</div><div class="value">${p.region}</div></div>
+      <div><div class="label">Origin</div><div class="value">${p.origin}</div></div>
+      <div><div class="label">Founded</div><div class="value">${p.founded}</div></div>
+      <div style="grid-column: 1 / -1;"><div class="label">License</div><div class="value">${p.license}</div></div>
+    </div>
+    <a class="modal-link" href="${p.url}" target="_blank" rel="noopener">Visit project →</a>
+  `;
+  modal.classList.add("open");
+  document.getElementById("close-x").addEventListener("click", closeModal);
+}
+
+function closeModal() { modal.classList.remove("open"); }
+
+modal.addEventListener("click", e => {
+  if (e.target === modal) closeModal();
+});
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") closeModal();
+});
+
+render();
+</script>
+</body>
+</html>
